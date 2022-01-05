@@ -10,17 +10,19 @@ class TcpSpeedTester:
         self.download_socket.listen(100)
         self.upload_socket = None
         self.max_testing_time = 10.00
+        self.packet_size = 1024
 
 
     def run_upload_test(self):
 
         self.upload_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.upload_socket.connect((self.dst_address[0], self.dst_address[1]))
-        packet_size = 1024
-        buffer = bytes(packet_size)
+        buffer = bytes(self.packet_size)
         packets_sent = 0
-        start_time = time.time()
 
+        self.upload_socket.send("ok") #synchronization...
+        start_time = time.time()
+        
         print("Testing upload...")
         while (time.time() - start_time) < self.max_testing_time:
             self.upload_socket.send(buffer)
@@ -29,15 +31,42 @@ class TcpSpeedTester:
         test_time = round(time.time() - start_time, 2)
         print("Upload test finished!")
         print("Test report:")
-        print(f"bits/s: {round((packet_size * packets_sent * 8) / test_time, 2)}")
+        print(f"bits/s: {round((self.packet_size * packets_sent * 8) / test_time, 2)}")
         print(f"packets/s: {round(packets_sent / test_time, 2)}")
-        print(f"total bytes transferred: {packet_size * packets_sent}")
+        print(f"total bytes transferred: {self.packet_size * packets_sent}")
         print(f"test time: {test_time}")
         print(f"lost packets: 0")
 
+        self.upload_socket.shutdown(socket.SHUT_RDWR)
+        self.upload_socket.close()
+        self.upload_socket = None
+
 
     def run_download_test(self):
-        pass
+        
+        connection, addr = self.download_socket.accept()
+        packets_received = 0
+        
+        connection.recv(1024) #synchronization...
+        start_time = time.time()
+
+        print("Testing download...")
+        bytes_read = connection.recv(packet_size)
+        while bytes_read:
+            packets_received += 1
+            bytes_read = connection.recv(packet_size)
+
+        test_time = round(time.time() - start_time, 2)
+        print("Download test finished!")
+        print("Test report:")
+        print(f"bits/s: {round((self.packet_size * packets_received * 8) / test_time, 2)}")
+        print(f"packets/s: {round(packets_sent / test_time, 2)}")
+        print(f"total bytes transferred: {self.packet_size * packets_received}")
+        print(f"test time: {test_time}")
+        print(f"lost packets: 0")
+
+        connection.shutdown(socket.SHUT_RD)
+        connection.close()
 
 
     def run(self, execution_type):

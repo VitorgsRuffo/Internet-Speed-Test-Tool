@@ -20,11 +20,11 @@ from UdpSpeedTester import UdpSpeedTester
 class SpeedTester:
     def __init__(self, src_address, dst_address, execution_type: str):
         self.tcp_speed_tester = TcpSpeedTester(src_address, dst_address)
-        self.udp_speed_tester = UdpSpeedTester(src_address, dst_address)
+        #self.udp_speed_tester = UdpSpeedTester(src_address, dst_address)
 
     def run(self):
         self.tcp_speed_tester.run(self.execution_type)
-        self.udp_speed_tester.run(self.execution_type)
+        #self.udp_speed_tester.run(self.execution_type)
 
 
 # main

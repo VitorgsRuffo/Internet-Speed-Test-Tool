@@ -21,14 +21,20 @@ class TcpSpeedTester:
         buffer = bytes(self.packet_size)
         packets_sent = 0
 
-        #self.upload_socket.send("ok".encode()) #synchronization...
+        self.upload_socket.send("ok".encode()) #synchronization...
+        self.upload_socket.recv(1024) 
         start_time = time.time()
         
         print("Testing upload...")
         while (time.time() - start_time) < self.max_testing_time:
             bytes_s = self.upload_socket.send(buffer)
+            self.upload_socket.recv(1024)
             packets_sent += 1
             #print(f"packet {packets_sent} - {time.time()-start_time} - {bytes_s}...")
+        
+        self.upload_socket.shutdown(socket.SHUT_RDWR)
+        self.upload_socket.close()
+        self.upload_socket = None
 
         test_time = round(time.time() - start_time, 2)
         print("Upload test finished!")
@@ -39,25 +45,27 @@ class TcpSpeedTester:
         print(f"test time: {test_time}")
         print(f"lost packets: 0")
 
-        self.upload_socket.shutdown(socket.SHUT_RDWR)
-        self.upload_socket.close()
-        self.upload_socket = None
-
 
     def run_download_test(self):
         
         connection, addr = self.download_socket.accept()
         packets_received = 0
         
-        #connection.recv(1024) #synchronization...
+        connection.recv(1024) #synchronization...
+        connection.send("ok".encode())
         start_time = time.time()
 
         print("Testing download...")
-        bytes_read = connection.recv(self.packet_size)
-        while bytes_read:
+        while True:
+            bytes_read = connection.recv(self.packet_size)
+            if not bytes_read:
+                break
+            connection.send("ok".encode())
             packets_received += 1
             #print(f"packet {packets_received}...")
-            bytes_read = connection.recv(self.packet_size)
+        
+        connection.shutdown(socket.SHUT_RD)
+        connection.close()
 
         test_time = round(time.time() - start_time, 2)
         print("Download test finished!")
@@ -67,9 +75,6 @@ class TcpSpeedTester:
         print(f"total bytes transferred: {self.packet_size * packets_received}")
         print(f"test time: {test_time}")
         print(f"lost packets: 0")
-
-        connection.shutdown(socket.SHUT_RD)
-        connection.close()
 
 
     def run(self, execution_type):

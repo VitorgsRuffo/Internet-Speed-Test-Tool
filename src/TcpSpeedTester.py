@@ -1,5 +1,4 @@
 import socket
-
 import time
 
 class TcpSpeedTester:
@@ -36,7 +35,7 @@ class TcpSpeedTester:
         self.upload_socket = None
 
         test_time = round(time.time() - start_time, 2)
-        print("Upload test finished!")
+        print("Upload finished!")
         print("\nTest report:")
         print("------------")
         print(f"\tbits/s: {round(((self.packet_size * packets_sent * 8) / test_time) / 1024, 2)}K")
@@ -67,7 +66,7 @@ class TcpSpeedTester:
         connection.close()
 
         test_time = round(time.time() - start_time, 2)
-        print("Download test finished!")
+        print("Download finished!")
         print("\nTest report:")
         print("------------")
         print(f"\tbits/s: {round(((self.packet_size * packets_received * 8) / test_time) / 1024, 2)}K")

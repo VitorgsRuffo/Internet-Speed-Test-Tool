@@ -22,8 +22,8 @@ class TcpSpeedTester:
 
         self.upload_socket.send("ok".encode()) #synchronization...
         self.upload_socket.recv(1024) 
+
         start_time = time.time()
-        
         print("\nTesting upload...")
         while (time.time() - start_time) < self.max_testing_time:
             self.upload_socket.send(buffer)
@@ -52,8 +52,8 @@ class TcpSpeedTester:
         
         connection.recv(1024) #synchronization...
         connection.send("ok".encode())
-        start_time = time.time()
 
+        start_time = time.time()
         print("\nTesting download...")
         while True:
             bytes_read = connection.recv(self.packet_size)

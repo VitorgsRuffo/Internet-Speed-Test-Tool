@@ -27,12 +27,12 @@ class SpeedTester:
         print("\nTCP TEST:")
         print("---------")
         self.tcp_speed_tester.run(self.execution_type)
-        print("\nUDP TEST:")
+        print("\n\nUDP TEST:")
         print("---------")
         self.udp_speed_tester.run(self.execution_type)
 
 
 # main
 print("\n\nWelcome to VW internet speed test tool!\n")
-tester = SpeedTester((src_ip, src_port), (dst_ip, dst_port), execution_type)
+tester = SpeedTester((src_ip, int(src_port)), (dst_ip, int(dst_port)), execution_type)
 tester.run()

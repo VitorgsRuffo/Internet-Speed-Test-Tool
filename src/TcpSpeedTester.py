@@ -3,7 +3,8 @@ import time
 
 class TcpSpeedTester:
 
-    def __init__(self, src_address, dst_address):
+    def __init__(self, src_address, dst_address, execution_mode):
+        self.execution_mode = execution_mode
         self.download_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.download_socket.bind((src_address[0], int(src_address[1])))
         self.download_socket.listen(100)
@@ -13,7 +14,7 @@ class TcpSpeedTester:
         self.packet_size = 1024
 
 
-    def run_upload_test(self):
+    def __run_upload_test(self):
 
         self.upload_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.upload_socket.connect((self.dst_address[0], int(self.dst_address[1])))
@@ -45,7 +46,7 @@ class TcpSpeedTester:
         print(f"\tlost packets: 0")
 
 
-    def run_download_test(self):
+    def __run_download_test(self):
         
         connection, addr = self.download_socket.accept()
         packets_received = 0
@@ -76,10 +77,12 @@ class TcpSpeedTester:
         print(f"\tlost packets: 0")
 
 
-    def run(self, execution_type):
-        if execution_type == "-df":
-            self.run_download_test()
-            self.run_upload_test()
+    def run(self):
+        print("\nTCP TEST:")
+        print("---------")
+        if self.execution_mode == "-df":
+            self.__run_download_test()
+            self.__run_upload_test()
         else:
-            self.run_upload_test()
-            self.run_download_test()
+            self.__run_upload_test()
+            self.__run_download_test()

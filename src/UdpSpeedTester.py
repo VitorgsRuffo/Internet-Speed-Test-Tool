@@ -2,7 +2,8 @@ import socket
 import time
 
 class UdpSpeedTester:
-    def __init__(self, src_address, dst_address):
+    def __init__(self, src_address, dst_address, execution_mode):
+        self.execution_mode = execution_mode
         self.download_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.download_socket.bind((src_address[0], int(src_address[1])))
         self.dst_address = dst_address
@@ -11,7 +12,7 @@ class UdpSpeedTester:
         self.packet_size = 1024
 
 
-    def run_upload_test(self):
+    def __run_upload_test(self):
         self.upload_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.upload_socket.settimeout(0.1)
         buffer = bytes(self.packet_size)
@@ -51,7 +52,7 @@ class UdpSpeedTester:
         print(f"\tlost packets: {lost_packets}")
 
 
-    def run_download_test(self):
+    def __run_download_test(self):
         packets_received = 0
         lost_packets = 0
         #synchronization...
@@ -88,10 +89,12 @@ class UdpSpeedTester:
     
     
     
-    def run(self, execution_type):
-        if execution_type == "-df":
-            self.run_download_test()
-            self.run_upload_test()
+    def run(self):
+        print("\n\nUDP TEST:")
+        print("---------")
+        if self.execution_mode == "-df":
+            self.__run_download_test()
+            self.__run_upload_test()
         else:
-            self.run_upload_test()
-            self.run_download_test()
+            self.__run_upload_test()
+            self.__run_download_test()

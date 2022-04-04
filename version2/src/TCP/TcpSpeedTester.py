@@ -47,6 +47,18 @@ def download_test(src_ip, src_port, packet_size, ):
         bits_per_sec = round(bits_per_sec / 10**3, 2)
         prefix = 'K'
 
+    bytes_transferred = packet_size * packets_received
+    b_prefix = ''
+    if bytes_transferred // 10**9 > 0:
+        bytes_transferred = round(bytes_transferred / 10**9, 2)
+        b_prefix = 'G'
+    elif bytes_transferred // 10**6 > 0:
+        bytes_transferred = round(bytes_transferred / 10**6, 2)
+        b_prefix = 'M'
+    elif bytes_transferred // 10**3 > 0:
+        bytes_transferred = round(bytes_transferred / 10**3, 2)
+        b_prefix = 'K'
+
 
     # formatting result format    
     print("Test finished!")
@@ -54,7 +66,8 @@ def download_test(src_ip, src_port, packet_size, ):
     print("------------")
     print(f"\t{prefix}bits/s: {bits_per_sec}")
     print(f"\tpackets/s: {'{0:,}'.format(round(packets_received / test_time, 2)).replace(',','.')}")
-    print(f"\ttotal bytes transferred: {'{0:,}'.format(round(((packet_size * packets_received)/1024),2)).replace(',','.')}")
+    print(f"\ttotal packets transferred: {'{0:,}'.format(packets_received).replace(',','.')}")
+    print(f"\ttotal bytes transferred: {'{0:,}'.format(bytes_transferred).replace(',','.')}{b_prefix}")
     print(f"\ttest time: {test_time} seg")
     print(f"\tlost packets: 0")
 
@@ -91,6 +104,18 @@ def upload_test(dst_ip, dst_port, max_testing_time, packet_size):
     elif bits_per_sec // 10**3 > 0:
         bits_per_sec = round(bits_per_sec / 10**3, 2)
         prefix = 'K'
+    
+    bytes_transferred = packet_size * packets_sent
+    b_prefix = ''
+    if bytes_transferred // 10**9 > 0:
+        bytes_transferred = round(bytes_transferred / 10**9, 2)
+        b_prefix = 'G'
+    elif bytes_transferred // 10**6 > 0:
+        bytes_transferred = round(bytes_transferred / 10**6, 2)
+        b_prefix = 'M'
+    elif bytes_transferred // 10**3 > 0:
+        bytes_transferred = round(bytes_transferred / 10**3, 2)
+        b_prefix = 'K'
         
 
     # formatting result format    
@@ -99,7 +124,8 @@ def upload_test(dst_ip, dst_port, max_testing_time, packet_size):
     print("------------")
     print(f"\t{prefix}bits/s: {bits_per_sec}")
     print(f"\tpackets/s: {'{0:,}'.format(round(packets_sent / test_time, 2)).replace(',','.')}")
-    print(f"\ttotal bytes transferred: {'{0:,}'.format(round(((packet_size * packets_sent)/1024),2)).replace(',','.')}")
+    print(f"\ttotal packets transferred: {'{0:,}'.format(packets_sent).replace(',','.')}")
+    print(f"\ttotal bytes transferred: {'{0:,}'.format(bytes_transferred).replace(',','.')}{b_prefix}")
     print(f"\ttest time: {test_time} seg")
     print(f"\tlost packets: 0")
 
@@ -119,7 +145,7 @@ def main():
     test = sys.argv[5]
 
     # setting configs
-    max_testing_time = 10.00
+    max_testing_time = 20.00
     packet_size = 500
 
     # Checking execution type

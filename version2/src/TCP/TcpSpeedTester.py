@@ -1,6 +1,15 @@
 import sys
 import socket
 import time
+import math
+
+def generate_test_string(packet_size):
+    string = "teste de rede *2022*"
+    times = math.ceil(packet_size/len(string))
+    final_string = ""
+    final_string = final_string.join([string]*times)
+    final_string = final_string[:500]
+    return bytes(final_string, 'ascii')
 
 def download_test(src_ip, src_port, packet_size, ):
     #instantiating socket...
@@ -38,6 +47,7 @@ def download_test(src_ip, src_port, packet_size, ):
         bits_per_sec = round(bits_per_sec / 10**3, 2)
         prefix = 'K'
 
+
     # formatting result format    
     print("Test finished!")
     print("\nReport:")
@@ -52,7 +62,7 @@ def download_test(src_ip, src_port, packet_size, ):
 def upload_test(dst_ip, dst_port, max_testing_time, packet_size):
     upload_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     upload_socket.connect((dst_ip, int(dst_port)))
-    buffer = bytes(packet_size)
+    buffer = generate_test_string(packet_size)
     packets_sent = 0
 
     start_time = time.time()

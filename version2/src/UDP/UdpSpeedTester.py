@@ -2,9 +2,6 @@ import sys
 import socket
 import time
 import math
-    
-#to do list:
-# - fix big number displaying problem.
 
 def generate_test_string(packet_size):
     string = "teste de rede *2022*"
@@ -71,9 +68,9 @@ def udp_download_test(src_address, max_testing_time, packet_size):
     print("\nReport:")
     print("------------")
     print(f"\t{prefix}bits/s: {bits_per_sec}")
-    print(f"\tpackets/s: {round(packets_received / test_time, 2)}")
-    print(f"\ttotal bytes transferred: {bytes_transferred}{b_prefix}")
-    print(f"\ttotal packets transferred: {packets_received}")
+    print(f"\tpackets/s: {'{0:,}'.format(round(packets_received / test_time, 2)).replace(',','.')}")
+    print(f"\ttotal packets transferred: {'{0:,}'.format(packets_received).replace(',','.')}")
+    print(f"\ttotal bytes transferred: {'{0:,}'.format(bytes_transferred).replace(',','.')}{b_prefix}")
     print(f"\ttest time: {test_time} seg")
     print(f"\tlost packets: {lost_packets}")
 
@@ -133,9 +130,9 @@ def udp_upload_test(dst_address, max_testing_time, packet_size):
     print("\nReport:")
     print("------------")
     print(f"\t{prefix}bits/s: {bits_per_sec}")
-    print(f"\tpackets/s: {round(packets_sent / test_time, 2)}")
-    print(f"\ttotal bytes transferred: {bytes_transferred}{b_prefix}")
-    print(f"\ttotal packets transferred: {packets_sent}")
+    print(f"\tpackets/s: {'{0:,}'.format(round(packets_sent / test_time, 2)).replace(',','.')}")
+    print(f"\ttotal packets transferred: {'{0:,}'.format(packets_sent).replace(',','.')}")
+    print(f"\ttotal bytes transferred: {'{0:,}'.format(bytes_transferred).replace(',','.')}{b_prefix}")
     print(f"\ttest time: {test_time} seg")
     print(f"\tlost packets: {lost_packets}")
 

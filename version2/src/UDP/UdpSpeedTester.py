@@ -1,3 +1,4 @@
+from base64 import decode
 import sys
 import socket
 import time
@@ -17,6 +18,9 @@ def udp_download_test(src_address, max_testing_time, packet_size):
     download_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     download_socket.bind((src_address[0], src_address[1]))
     packets_received = 0
+    buffer = generate_test_string(packet_size)
+    packets_sent = 0
+    dst_address = 0
 
     #performing test...
     print("\nTesting download...")
@@ -24,6 +28,11 @@ def udp_download_test(src_address, max_testing_time, packet_size):
 
     while True:
         bytes_read, _ = download_socket.recvfrom(packet_size)
+        #print(".")
+        if bytes_read != buffer and bytes_read.decode() != "end":
+            packets_sent = int(bytes_read.decode())
+            dst_address = _
+            break
         if bytes_read.decode() == "end":
             break
         packets_received += 1
@@ -31,8 +40,9 @@ def udp_download_test(src_address, max_testing_time, packet_size):
     test_time = round(time.time() - start_time, 2)
 
     #calculating report variables...
-    packets_sent, dst_address = download_socket.recvfrom(packet_size)
-    packets_sent = int(packets_sent.decode())
+    if packets_sent == 0 and dst_address == 0:
+        packets_sent, dst_address = download_socket.recvfrom(packet_size)
+        packets_sent = int(packets_sent.decode())
     lost_packets = abs(packets_sent - packets_received)
     download_socket.sendto((str(lost_packets)).encode(), dst_address)
     download_socket.close()
